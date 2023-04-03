@@ -1,0 +1,192 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.MasterLogin {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.hashpack-connect-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+}
+.hashpack-connect-container {
+    
+    display: flex !important;
+    flex-direction: row !important;
+    background-color:rgba(33, 31, 84, 0.7);
+    width: 25em;
+    height: 20em;
+    border: 1px solid #d78c23;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 1em;
+    
+    .row {
+        margin: 0;
+    }
+
+    .modal-title {
+        padding: 1em;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        color:#d78c23;
+        font-size: 2em;
+        margin: 0;
+        font-weight: 800;
+        background-color: rgba(11, 9, 46, 0.719);
+        line-height: 0.5em;
+        border-bottom: 1px solid #d78c23;
+        margin-bottom: 0.5em;
+    }
+
+    .modal-mini-title {
+        color: lightcyan;
+        font-size: 16px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .hashpack-connect-btn {
+        font-family: 'Lexend Deca', sans-serif !important;
+        position: relative;
+        left: auto;
+        right: auto;
+        display: flex;
+        width: 300px;
+        height: 45px;
+        max-height: 50px;
+        max-width: 300px;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid white;
+        border-radius: 100px;
+        background-color: transparent;
+        transition-property: opacity;
+        transition-duration: 200ms;
+        transition-timing-function: ease;
+        font-family: Lexenddeca;
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+        margin-bottom: 1.5em;
+
+        img {
+            width: 2.5em;
+            border-radius: 0.5em;
+        }
+
+        p {
+            font-size: 1.5em;
+            margin: 0 0 0 10px;
+        }
+    }
+
+    .hashpack-connect-btn:hover {
+        border-top-style: solid;
+        border-top-color: hsla(257, 0.00%, 100.00%, 1.00);
+        border-right-style: solid;
+        border-right-color: hsla(257, 0.00%, 100.00%, 1.00);
+        border-bottom-style: solid;
+        border-bottom-color: hsla(257, 0.00%, 100.00%, 1.00);
+        border-left-style: solid;
+        border-left-color: hsla(257, 0.00%, 100.00%, 1.00);
+        background-color: hsla(69, 35.19%, 51.65%, 1.00);
+        background-image: linear-gradient(94deg, #d3d158, #ff58e3);
+        color: hsla(65, 79.20%, 17.49%, 1.00);
+        font-weight: 700;
+    }
+
+    .pair-with-code-wrapper {
+        width: 100%;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center;
+        align-items: center;
+ 
+
+        .form-control {
+            
+            background-color: black;
+            color: white;
+            font-size: 14px;
+            border-radius: 0;
+            width: 200px;
+            border: 1px solid #4a417f;
+            height: 2em;
+            margin-right: 1em;
+            border-radius: 0.5em;
+            border: 1px solid rgba(255, 255, 255, 0.521);
+        }
+
+        .btn {
+            background-color: #ffffffa2;
+            width: 56px;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        .btn:hover {
+            background-color: #424062;
+        }
+
+        .warning-message {
+            color: white;
+            margin: 0;
+            font-weight: 500;
+        }
+    }
+}
+
+.navbar {
+    position: sticky !important;
+    left: 0%;
+    top: 0%;
+    right: 0%;
+    bottom: auto;
+    display: flex;
+    height: 4em;
+    max-width: 1440px;
+    max-width: 1250px;
+    margin-right: auto;
+    margin-left: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    background-color: hsla(0, 0%, 0%, 0.068)!important;
+    border-bottom-color: white;
+    z-index: 80 !important;
+    box-shadow: none !important;
+      
+    }
+
+    .MuiInputBase-root {
+        color: white !important;
+      }
+      
+      .MuiInputBase-root-MuiInput-root {
+        color: white !important;
+      }
