@@ -25,7 +25,8 @@ const rootElement = document.getElementById("app") as HTMLElement;
 const root = createRoot(rootElement);
 const hashConnect = new HashConnect(true);
 
-function App() {
+function App()
+{
   const [stringValue, setStringValue] = useState("");
   const [usernameValue, setUsernameValue] = useState("");
   const [walletConnectModalViewFlag, setWalletConnectModalViewFlag] = useState(false);
@@ -35,7 +36,8 @@ function App() {
   const { sendHbarToTreasury } = useHashConnect();
 
   const deposit = async(hbarAmount) => {
-    console.log ("bbbbbbbbbbbbbbb")
+    console.log ('hbarAmount: ' + hbarAmount);
+
     const _approveResult = await sendHbarToTreasury(hbarAmount);
 
     if (!_approveResult){
@@ -50,7 +52,7 @@ function App() {
 
     console.log ("aaaaaaaaaaaaaaaa", data)
 
-    const _postResult = await postRequest("https://hbarroulette.io:3306/sendHbarToTreasury", data);
+    const _postResult = await postRequest("http://localhost:8000/sendHbarToTreasury", data);
 
     return _postResult;
   }

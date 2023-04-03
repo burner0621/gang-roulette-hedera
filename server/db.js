@@ -9,7 +9,9 @@ export function createTable(db) {
 			ID INTEGER PRIMARY KEY AUTOINCREMENT,
 			username   VARCHAR(50) NOT NULL,
 			walletId VARCHAR(50) NOT NULL,
-			balance   INTEGER NOT NULL
+			balance   INTEGER NOT NULL,
+			win       INTEGER NOT NULL,
+			lost      INTEGER NOT NULL
 		);
 	`);
 	db.close();
@@ -17,18 +19,52 @@ export function createTable(db) {
 
 export function insertRow(username, walletId, balance) {
 	const db = new sqlite(filepath);
-	let sql = `INSERT INTO users (username, walletId, balance) VALUES (?, ?, ?)`;
+	let sql = `INSERT INTO users (username, walletId, balance, win, lost) VALUES (?, ?, ?, ?, ?)`;
 	const stmt = db.prepare(sql);
-	stmt.run(username, walletId, balance);
+	stmt.run(username, walletId, balance, 0, 0);
 }
 
-export function updateRow (username, balance) {
+export function resetRow (walletId) {
 	const db = new sqlite(filepath);
-	let sql = `UPDATE users
-            SET balance = ?
-            WHERE walletId = ?`;
+	let sql =  `UPDATE
+					users
+				SET
+					balance = 0,
+					win = 0,
+					lost = 0
+				WHERE
+					walletId = ?`;
 	const stmt = db.prepare(sql);
-	stmt.run(balance, username);
+	stmt.run(balance, walletId);
+}
+
+export function updateRow (walletId, balance) {
+	const db = new sqlite(filepath);
+	let sql =  `UPDATE
+					users
+				SET
+					balance = ?
+				WHERE
+					walletId = ?`;
+	const stmt = db.prepare(sql);
+	stmt.run(balance, walletId);
+}
+
+export function updateRowWL (walletId, balance, win, lost) {
+	console.log(balance);
+	console.log('win:  ' + win);
+	console.log('lost: ' + lost);
+	const db = new sqlite(filepath);
+	let sql =  `UPDATE
+					users
+				SET
+					balance = ?,
+					win = win + ?, 
+					lost = lost + ?
+				WHERE
+					walletId = ?`;
+	const stmt = db.prepare(sql);
+	stmt.run(balance, win, lost, walletId);
 }
 
 export function getRow(walletId) {
@@ -45,5 +81,8 @@ export function deposit(walletId, balance) {
 }
 
 export function refund(walletId) {
-	updateRow(walletId, 0);
+	console.log('resetRow: function');
+	console.log(walletId);
+
+	resetRow(walletId);
 }

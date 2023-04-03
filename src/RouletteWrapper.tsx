@@ -101,8 +101,8 @@ class RouletteWrapper extends React.Component<any, any> {
     this.register = this.register.bind(this);
     this.getBalance = this.getBalance.bind(this);
 
-    // this.socketServer = io("http://94.131.105.114:3306");
-    this.socketServer = io("https://hbarroulette.io:3306");
+    // this.socketServer = io("http://94.131.105.114:8000");
+    this.socketServer = io("http://localhost:8000");
   }
 
   componentDidMount() {
@@ -125,7 +125,7 @@ class RouletteWrapper extends React.Component<any, any> {
   }
   async register(){
     const data = { a: btoa(this.props.username) }
-    const _postResult = await postRequest("https://hbarroulette.io:3306/register", data);
+    const _postResult = await postRequest("http://localhost:8000/register", data);
   }
   getBalance(gameData: GameData, name: string){
     var balances = gameData.balances;
@@ -175,8 +175,9 @@ class RouletteWrapper extends React.Component<any, any> {
         this.setState({depositedAmount: this.state.depositedAmount + this.state.depositAmount});
         toast.info("Deposited successfully. Now you can place bet.",{position: toast.POSITION.BOTTOM_CENTER});
       }
-      else
+      else {
         toast.error("Depositing has been failed. Please try again.",{position: toast.POSITION.BOTTOM_CENTER});
+      }
     }
     else
     toast.error("Amount maybe lower than zero or not correct.",{position: toast.POSITION.BOTTOM_CENTER});
@@ -197,13 +198,17 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      const _postResult = await postRequest("https://hbarroulette.io:3306/refund", data);
-  
+      console.log('http://localhost:8000/refund');
+      const _postResult = await postRequest("http://localhost:8000/refund", data);
+ 
+      console.log(_postResult);
+
       if(!_postResult['result']){
         toast.error("Refund was failed. Please try again after a while.",{position: toast.POSITION.BOTTOM_CENTER});
       } else {
         this.socketServer.emit("refund", this.props.username);
         this.setState({depositedAmount: 0});
+
         toast.info("Successfully refunded to your wallet.",{position: toast.POSITION.BOTTOM_CENTER});
       }
     }
@@ -278,6 +283,8 @@ class RouletteWrapper extends React.Component<any, any> {
     }
   }
   placeBet() {
+    console.log('placeBet function');
+
     if( this.state.stage === GameStages.PLACE_BET){
       var sum = 0;
       var placedChipsMap = this.state.chipsData.placedChips
@@ -297,12 +304,15 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'https://hbarroulette.io:3306/placebet',
+          url: 'http://localhost:8000/placebet',
           responseType: 'json'
         })
-          .then(function (response) {
-            console.log("OOOOOOOOOOOOOOOOOOOO"+ response.data);
-          });
+        .then(function (response) {
+          console.log("OOOOOOOOOOOOOOOOOOOO"+ response.data);
+        });
+
+        console.log('chips');
+        console.log(chips);
         this.socketServer.emit("place-bet", JSON.stringify(chips));
         toast.info("Betted successfully! Amount:" + sum.toString(),{position: toast.POSITION.BOTTOM_CENTER});
       }

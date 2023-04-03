@@ -5,7 +5,7 @@ import {
   sendHbar,
 } from "./chainlock.js";
 import { getAllowance } from "./chainlock.js";
-import { createDbConnection, getRow, insertRow, updateRow } from "./db.js";
+import { createDbConnection, getRow, insertRow, updateRow, updateRowWL } from "./db.js";
 
 const betRoutes = express.Router();
 
@@ -22,6 +22,8 @@ betRoutes.route("/register").post(function (req, res) {
 betRoutes.route("/placebet").get(function (req, res) {
   const username = "eef";
   const balance = 123;
+
+  console.log ("KKKKKKKKKKKKKKKK")
 
   updateRow(username, balance);
   res.send("asdfasdf");
@@ -48,12 +50,18 @@ betRoutes.route("/refund").post(async function (req, res) {
   }
 
   var row = getRow(_accountId);
-  if (row != undefined && row["balance"] > 0) {
-    const _sendresult = sendHbar(_accountId, row["balance"]);
-    if (_sendresult) {
-      return res.send({ result: true, msg: "Sent hbar successfully!" });
+  console.log('refund()');
+  console.log(row);
+  if (row != undefined) {
+    if (row["balance"] > 0) {
+      const _sendresult = sendHbar(_accountId, row["balance"], row['win'], row['lost']);
+      if (_sendresult) {
+        return res.send({ result: true, msg: "Sent hbar successfully!" });
+      } else {
+        return res.send({ result: false, msg: "Sending hbar failed!" });
+      }
     } else {
-      return res.send({ result: false, msg: "Sending hbar failed!" });
+      // non-code
     }
   } else {
     return res.send({

@@ -76,7 +76,7 @@ export const HashConnectAPIContext =
     disconnect: () => null,
     tokenTransfer: () => null,
     walletData: INITIAL_SAVE_DATA,
-    netWork: "mainnet",
+    netWork: "testnet",
     installedExtensions: null,
   });
 

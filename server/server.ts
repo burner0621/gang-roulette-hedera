@@ -1,5 +1,5 @@
-// import { createServer } from "http";
-import { createServer } from "https";
+//import { createServer } from "https";
+import { createServer } from "http";
 import fs from 'fs';
 import { Server } from "socket.io";
 import { income, balance, GameData, GameStages, PlacedChip, ValueType, Winner } from "../src/Global";
@@ -7,21 +7,25 @@ import { Timer } from "easytimer.js";
 import express from 'express';
 import cors from 'cors';
 import betRoutes from './placebet.js';
-import { updateRow, getRow, deposit, refund } from "./db";
+import { updateRowWL, getRow, deposit, refund } from "./db";
 
 /** Server Handling */
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(betRoutes);
-const privateKey = fs.readFileSync("/etc/letsencrypt/live/hbarroulette.io/privkey.pem");
-const certificate = fs.readFileSync("/etc/letsencrypt/live/hbarroulette.io/fullchain.pem");
 
-const credentials = {
-    key: privateKey,
-    cert: certificate,
-}
-const httpServer = createServer(credentials, app);
+// const privateKey = fs.readFileSync("/etc/letsencrypt/live/hbarroulette.io/privkey.pem");
+// const certificate = fs.readFileSync("/etc/letsencrypt/live/hbarroulette.io/fullchain.pem");
+
+// const credentials = {
+//     key: privateKey,
+//     cert: certificate,
+// }
+// const httpServer = createServer(credentials, app);
+
+const httpServer = createServer(app);
+
 const io = new Server(httpServer, {
   cors: {
     origin: "*"
@@ -57,6 +61,8 @@ timer.addEventListener('secondsUpdated', function (e: any) {
     for(let key of Array.from( usersData.keys()) ) {
       var username = users.get(key);
 
+      console.log(username);
+
       if (username != undefined) {
         var chipsPlaced = usersData.get(key) as PlacedChip[]
 
@@ -73,11 +79,18 @@ timer.addEventListener('secondsUpdated', function (e: any) {
             sum: sumWon
         });
 
+        console.log('bet:' + bettedSum);
+        console.log('total:' + sumWon);
+
         for(i = 0; i < balances.length; i++ )
         {
           if(balances[i].username == username){
             balances[i].value += (sumWon - bettedSum);
-            updateRow(username, balances[i].value);
+            if (sumWon - bettedSum >= 0) {
+              updateRowWL(username, balances[i].value, sumWon - bettedSum, 0);
+            } else {
+              updateRowWL(username, balances[i].value, 0, bettedSum);
+            }
           }
         }
       }
@@ -103,7 +116,7 @@ timer.addEventListener('secondsUpdated', function (e: any) {
 });
 
 io.on("connection", (socket) => {
-  
+
   socket.on('enter', (data: string) => {
     var existed = false;
     users.set(socket.id, data);
@@ -131,6 +144,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on('place-bet', (data: string) => {
+    console.log('Server: Place-Bet');
     var chipData = JSON.parse(data) as PlacedChip[]
     usersData.set(socket.id, chipData)
   });
@@ -146,11 +160,13 @@ io.on("connection", (socket) => {
   });
   socket.on('refund', (name: string) => {
     var i = 0;
+    console.log('refund: ' + name);
     for( i = 0; i < balances.length; i++ ){
       if(balances[i].username == name){
         balances[i].value = 0;
       }
     }
+
     refund(name);
     gameData.balances = balances;
   });
@@ -160,15 +176,15 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(3306, () =>{
+httpServer.listen(8000, () =>{
 
-  console.log(`Server is running on port 3306`);
+  console.log(`Server is running on port 8000`);
   
   timer.start({precision: 'seconds'});
 });
 
-// app.listen(3306, () => {
-//   console.log(`Server1 is running on port 3306`);
+// app.listen(8000, () => {
+//   console.log(`Server1 is running on port 8000`);
   
 //   timer.start({precision: 'seconds'});
 // });
