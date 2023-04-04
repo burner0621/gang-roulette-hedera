@@ -86,43 +86,43 @@ export const receiveAllowanceHbar = async (sender, hbarAmount) => {
   }
 };
 
-export const sendHbar = async (receiverId, hbarAmount, winAmount, lostAmount) => { console.log (receiverId, hbarAmount, "LLLLLLLLLLLLLLLL")
+export const sendHbar = async (receiverId, hbarAmount) => { console.log (receiverId, hbarAmount, "LLLLLLLLLLLLLLLL")
   const refundPercentage = parseInt(process.env.REFUND_PERCENTAGE); console.log ("refundPercenttage", process.env.REFUND_PERCENTAGE, refundPercentage)
   var amount = (hbarAmount * (100 - refundPercentage)) / 100;
-  var fee_win = winAmount * refundPercentage / 100;
-  var fee_lost = lostAmount * refundPercentage / 100;
+  var fee = hbarAmount - amount;
 
   console.log("sendHbar log - 1 : ", receiverId, amount);
-  console.log("win, lost fee: ", fee_win, fee_lost);
+  console.log("[*****] FEE:  ", fee);
   try {
     const transferTx = await new TransferTransaction()
       .addHbarTransfer(operatorId, new Hbar(-amount))
       .addHbarTransfer(AccountId.fromString(receiverId), new Hbar(amount))
+      .addHbarTransfer(operatorId, new Hbar(-fee))
+      .addHbarTransfer(AccountId.fromString(fee_two_Id), new Hbar(fee))
       .freezeWith(client)
       .sign(operatorKey);
     const transferSubmit = await transferTx.execute(client);
     const transferRx = await transferSubmit.getReceipt(client);
-    
-    // add fee
-    // @{
-    const transferTx_fee1 = await new TransferTransaction()
-      .addHbarTransfer(AccountId.fromString(fee_one_Id), new Hbar(fee_win))
-      .freezeWith(client_fee1)
-      .sign(fee_one_Key);
-    const transferSubmit_fee1 = await transferTx.execute(client_fee1);
-    const transferRx_fee1 = await transferSubmit.getReceipt(client_fee1);
-
-    const transferTx_fee2 = await new TransferTransaction()
-      .addHbarTransfer(AccountId.fromString(fee_two_Id), new Hbar(fee_lost))
-      .freezeWith(client_fee2)
-      .sign(fee_two_Key);
-    const transferSubmit_fee2 = await transferTx.execute(client_fee2);
-    const transferRx_fee2 = await transferSubmit.getReceipt(client_fee2);
-    // @}
 
     if (transferRx.status._code !== 22) return false;
-    if (transferRx_fee1.status._code !== 22) return false;
-    if (transferRx_fee2.status._code !== 22) return false;
+
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const sendHbar_Of_Bet = async (fee) => {
+  try {
+    const transferTx = await new TransferTransaction()
+      .addHbarTransfer(operatorId, new Hbar(-fee))
+      .addHbarTransfer(AccountId.fromString(fee_one_Id), new Hbar(fee))
+      .freezeWith(client)
+      .sign(operatorKey);
+    const transferSubmit = await transferTx.execute(client);
+    const transferRx = await transferSubmit.getReceipt(client);
+
+    if (transferRx.status._code !== 22) return false;
 
     return true;
   } catch (error) {

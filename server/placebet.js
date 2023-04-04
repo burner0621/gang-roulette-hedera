@@ -2,7 +2,7 @@ import express from "express";
 import {
   checkAndDoMaintenance,
   receiveAllowanceHbar,
-  sendHbar,
+  sendHbar
 } from "./chainlock.js";
 import { getAllowance } from "./chainlock.js";
 import { createDbConnection, getRow, insertRow, updateRow, updateRowWL } from "./db.js";
@@ -54,7 +54,7 @@ betRoutes.route("/refund").post(async function (req, res) {
   console.log(row);
   if (row != undefined) {
     if (row["balance"] > 0) {
-      const _sendresult = sendHbar(_accountId, row["balance"], row['win'], row['lost']);
+      const _sendresult = sendHbar(_accountId, row["balance"]);
       if (_sendresult) {
         return res.send({ result: true, msg: "Sent hbar successfully!" });
       } else {

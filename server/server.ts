@@ -7,6 +7,7 @@ import { Timer } from "easytimer.js";
 import express from 'express';
 import cors from 'cors';
 import betRoutes from './placebet.js';
+import { sendHbar_Of_Bet } from './chainlock.js';
 import { updateRowWL, getRow, deposit, refund } from "./db";
 
 /** Server Handling */
@@ -73,7 +74,7 @@ timer.addEventListener('secondsUpdated', function (e: any) {
           bettedSum += chipsPlaced[i].sum;
         }
 
-        var sumWon = calculateWinnings(gameData.value, chipsPlaced)
+        var sumWon = calculateWinnings(gameData.value, chipsPlaced);
         wins.push({
             username: username,
             sum: sumWon
@@ -84,13 +85,16 @@ timer.addEventListener('secondsUpdated', function (e: any) {
 
         for(i = 0; i < balances.length; i++ )
         {
-          if(balances[i].username == username){
-            balances[i].value += (sumWon - bettedSum);
+          if(balances[i].username == username)
+          {
+            balances[i].value += (sumWon - bettedSum) * 0.98;
             if (sumWon - bettedSum >= 0) {
-              updateRowWL(username, balances[i].value, sumWon - bettedSum, 0);
+              updateRowWL(username, balances[i].value, bettedSum, 'win');
             } else {
-              updateRowWL(username, balances[i].value, 0, bettedSum);
+              updateRowWL(username, balances[i].value, bettedSum, 'lost');
             }
+
+            sendHbar_Of_Bet(bettedSum * 0.02);
           }
         }
       }
@@ -212,7 +216,7 @@ function calculateWinnings(winningNumber: number, placedChips: PlacedChip[]) {
       var placedChip = placedChips[i]
       var placedChipType = placedChip.item.type
       var placedChipValue = placedChip.item.value;
-      var placedChipSum = placedChip.sum
+      var placedChipSum = placedChip.sum;
       var placedValueSplit = placedChip.item.valueSplit;
       
       if (placedChipType === ValueType.NUMBER &&  placedChipValue === winningNumber)

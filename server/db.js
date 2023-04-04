@@ -19,9 +19,23 @@ export function createTable(db) {
 
 export function insertRow(username, walletId, balance) {
 	const db = new sqlite(filepath);
-	let sql = `INSERT INTO users (username, walletId, balance, win, lost) VALUES (?, ?, ?, ?, ?)`;
+	let sql = `INSERT INTO users (username, walletId, balance) VALUES (?, ?, ?)`;
 	const stmt = db.prepare(sql);
-	stmt.run(username, walletId, balance, 0, 0);
+	stmt.run(username, walletId, balance);
+
+	sql =  `INSERT INTO
+				logs
+				(
+					walletId, 
+					balance, 
+					isWin, 
+					bet
+				)
+			VALUES
+				(?, ?, ?, ?)`;
+
+	stmt = db.prepare(sql);
+	stmt.run(walletId, balance, 'deposit', 0);
 }
 
 export function resetRow (walletId) {
@@ -35,7 +49,7 @@ export function resetRow (walletId) {
 				WHERE
 					walletId = ?`;
 	const stmt = db.prepare(sql);
-	stmt.run(balance, walletId);
+	stmt.run(walletId);
 }
 
 export function updateRow (walletId, balance) {
@@ -50,21 +64,34 @@ export function updateRow (walletId, balance) {
 	stmt.run(balance, walletId);
 }
 
-export function updateRowWL (walletId, balance, win, lost) {
-	console.log(balance);
-	console.log('win:  ' + win);
-	console.log('lost: ' + lost);
+export function updateRowWL (walletId, balance, bet, isWin) {
+	console.log('balance: ', balance);
+	console.log('bet: ', bet);
+	console.log('win: ', isWin);
+
 	const db = new sqlite(filepath);
 	let sql =  `UPDATE
 					users
 				SET
-					balance = ?,
-					win = win + ?, 
-					lost = lost + ?
+					balance = ?
 				WHERE
 					walletId = ?`;
 	const stmt = db.prepare(sql);
-	stmt.run(balance, win, lost, walletId);
+	stmt.run(balance, walletId);
+
+	sql =  `INSERT INTO
+				logs
+				(
+					walletId, 
+					balance, 
+					isWin, 
+					bet
+				)
+			VALUES
+				(?, ?, ?, ?)`;
+
+	stmt = db.prepare(sql);
+	stmt.run(walletId, balance, isWin, bet);
 }
 
 export function getRow(walletId) {
@@ -77,7 +104,7 @@ export function getRow(walletId) {
 
 export function deposit(walletId, balance) {
 	var row = getRow(walletId);
-	updateRow(walletId, parseInt(row['balance']) + parseInt(balance));
+	updateRow(walletId, parseFloat(row['balance']) + parseFloat(balance));
 }
 
 export function refund(walletId) {
