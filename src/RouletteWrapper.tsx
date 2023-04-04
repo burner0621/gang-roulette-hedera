@@ -102,7 +102,7 @@ class RouletteWrapper extends React.Component<any, any> {
     this.showLogs = this.showLogs.bind(this);
 
     // this.socketServer = io("http://94.131.105.114:8000");
-    this.socketServer = io("http://localhost:8000");
+    this.socketServer = io("http://hbarroulette.io:3306");
   }
 
   componentDidMount() {
@@ -134,7 +134,7 @@ class RouletteWrapper extends React.Component<any, any> {
 
   async register() {
     const data = { a: btoa(this.props.username) };
-    // const _postResult = await postRequest("http://localhost:8000/register", data);
+    // const _postResult = await postRequest("http://hbarroulette.io:3306/register", data);
   }
 
   getBalance(gameData: GameData, name: string){
@@ -212,8 +212,8 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      console.log('http://localhost:8000/refund');
-      const _postResult = await postRequest("http://localhost:8000/refund", data);
+      console.log('http://hbarroulette.io:3306/refund');
+      const _postResult = await postRequest("http://hbarroulette.io:3306/refund", data);
  
       console.log(_postResult);
 
@@ -318,7 +318,7 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'http://localhost:8000/placebet',
+          url: 'http://hbarroulette.io:3306/placebet',
           responseType: 'json'
         })
         .then(function (response) {
