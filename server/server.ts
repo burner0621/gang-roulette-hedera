@@ -94,7 +94,7 @@ timer.addEventListener('secondsUpdated', function (e: any) {
             } else {
               balances[i].value = 0;
             }
-            balances[i].value += sumWon * 0.98;
+            balances[i].value += sumWon;
 
             if (sumWon > bettedSum) {
               updateRowWL(username, balances[i].value, bettedSum, 'win');
