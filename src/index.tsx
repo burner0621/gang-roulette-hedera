@@ -52,7 +52,7 @@ function App()
 
     console.log ("aaaaaaaaaaaaaaaa", data)
 
-    const _postResult = await postRequest("http://65.108.142.188:8000/sendHbarToTreasury", data);
+    const _postResult = await postRequest("http://localhost:8000/sendHbarToTreasury", data);
 
     return _postResult;
   }

@@ -42,6 +42,7 @@
     "react-native-media-console": "^2.0.6",
     "react-native-video": "^6.0.0-alpha.5",
     "react-qr-code": "^2.0.11",
+    "react-router-dom": "^6.10.0",
     "react-scripts": "^5.0.1",
     "react-toastify": "^9.1.1",
     "reactstrap": "^9.1.5",

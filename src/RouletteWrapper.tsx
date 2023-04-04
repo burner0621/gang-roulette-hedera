@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import Wheel from "./Wheel";
 import Board from "./Board";
 import { List, Progress } from '@mantine/core';
@@ -36,14 +37,10 @@ import HowTo from './HowTo';
 import './styles.css';
 
 
-
-
-
 // var singleRotation = 0
 
 // var r1 = singleRotation * 0 // 0
 // var r2 = singleRotation * 2 // 19.45..
-
 
 class RouletteWrapper extends React.Component<any, any> {
 
@@ -101,8 +98,11 @@ class RouletteWrapper extends React.Component<any, any> {
     this.register = this.register.bind(this);
     this.getBalance = this.getBalance.bind(this);
 
+    // show logs
+    this.showLogs = this.showLogs.bind(this);
+
     // this.socketServer = io("http://94.131.105.114:8000");
-    this.socketServer = io("http://65.108.142.188:8000");
+    this.socketServer = io("http://localhost:8000");
   }
 
   componentDidMount() {
@@ -134,7 +134,7 @@ class RouletteWrapper extends React.Component<any, any> {
 
   async register() {
     const data = { a: btoa(this.props.username) };
-    // const _postResult = await postRequest("http://65.108.142.188:8000/register", data);
+    // const _postResult = await postRequest("http://localhost:8000/register", data);
   }
 
   getBalance(gameData: GameData, name: string){
@@ -212,8 +212,8 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      console.log('http://65.108.142.188:8000/refund');
-      const _postResult = await postRequest("http://65.108.142.188:8000/refund", data);
+      console.log('http://localhost:8000/refund');
+      const _postResult = await postRequest("http://localhost:8000/refund", data);
  
       console.log(_postResult);
 
@@ -318,7 +318,7 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'http://65.108.142.188:8000/placebet',
+          url: 'http://localhost:8000/placebet',
           responseType: 'json'
         })
         .then(function (response) {
@@ -344,6 +344,12 @@ class RouletteWrapper extends React.Component<any, any> {
       }
     });
   }
+
+  showLogs() {
+    const navigate = useNavigate();
+    navigate('/logs');
+  }
+
   render() {
     return (
       
@@ -358,7 +364,6 @@ class RouletteWrapper extends React.Component<any, any> {
                         <Button  className="disconnect withdraw2" style={{ marginRight: 20, marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={this.onRefundClick}>Withdraw</Button>
                         <Button className="disconnect placeBet2" style={{marginRight: 20, marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.placeBet()} >Place Bet</Button>
                         <Button  className="disconnect clearBet2" style={{ marginRight: 20,marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.clearBet()} >Clear Bet</Button>
-
           
                     </Toolbar>
                 </Container>
@@ -497,8 +502,10 @@ class RouletteWrapper extends React.Component<any, any> {
             <li style={{ display: "flex", alignItems: "center"}}>
               <Button endIcon={<DeleteOutlineIcon/>} className="disconnect clearBet" style={{ marginRight: 20,marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.clearBet()} >Clear Bet</Button>
             </li>
-
-           
+            
+            <li style={{ display: "flex", alignItems: "center"}}>
+              <Button endIcon={<DeleteOutlineIcon/>} className="disconnect clearBet" style={{ marginRight: 20,marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.showLogs()} >Logs</Button>
+            </li>
 
           </ul>
         </div>
