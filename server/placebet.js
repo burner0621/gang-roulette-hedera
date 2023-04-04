@@ -17,6 +17,8 @@ betRoutes.route("/register").post(function (req, res) {
   if (row == undefined) {
     insertRow("unknown", _walletId, 0);
   }
+
+  res.send(row);
 });
 
 betRoutes.route("/placebet").get(function (req, res) {
@@ -35,7 +37,7 @@ betRoutes.route("/deposit").post(function (req, res) {
 
   var row = getRow(username);
   if (row != undefined) {
-    updateRow(username, parseInt(row["balance"]) + parseInt(balance));
+    updateRow(username, parseFloat(row["balance"]) + parseFloat(balance));
     res.send("deposit succeed");
   } else {
     res.send("deposit failed");

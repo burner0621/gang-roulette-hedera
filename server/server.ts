@@ -82,13 +82,21 @@ timer.addEventListener('secondsUpdated', function (e: any) {
 
         console.log('bet:' + bettedSum);
         console.log('total:' + sumWon);
+        console.log('balances: ');
+        console.log(balances);
 
         for(i = 0; i < balances.length; i++ )
         {
           if(balances[i].username == username)
           {
-            balances[i].value += (sumWon - bettedSum) * 0.98;
-            if (sumWon - bettedSum >= 0) {
+            if (balances[i].value - bettedSum >= bettedSum * 0.02) {
+              balances[i].value -= bettedSum * 1.02;
+            } else {
+              balances[i].value = 0;
+            }
+            balances[i].value += sumWon * 0.98;
+
+            if (sumWon > bettedSum) {
               updateRowWL(username, balances[i].value, bettedSum, 'win');
             } else {
               updateRowWL(username, balances[i].value, bettedSum, 'lost');
@@ -123,6 +131,7 @@ io.on("connection", (socket) => {
 
   socket.on('enter', (data: string) => {
     var existed = false;
+    console.log('WALLET ID:', data);
     users.set(socket.id, data);
     var db_row = getRow(data);
     var i = 0;
@@ -139,10 +148,11 @@ io.on("connection", (socket) => {
     if( !existed ){
       balances.push({
         username: db_row['walletId'],
-        value: parseInt(db_row['balance'])
+        value: parseFloat(db_row['balance'])
       })
     }
-    
+
+    console.log(balances);
     gameData.balances = balances;
     sendStageEvent(gameData);
   });

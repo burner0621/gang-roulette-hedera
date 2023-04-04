@@ -97,14 +97,22 @@ export const sendHbar = async (receiverId, hbarAmount) => { console.log (receive
     const transferTx = await new TransferTransaction()
       .addHbarTransfer(operatorId, new Hbar(-amount))
       .addHbarTransfer(AccountId.fromString(receiverId), new Hbar(amount))
-      .addHbarTransfer(operatorId, new Hbar(-fee))
-      .addHbarTransfer(AccountId.fromString(fee_two_Id), new Hbar(fee))
       .freezeWith(client)
       .sign(operatorKey);
     const transferSubmit = await transferTx.execute(client);
     const transferRx = await transferSubmit.getReceipt(client);
 
     if (transferRx.status._code !== 22) return false;
+
+    // const transferTx1 = await new TransferTransaction()
+    //   .addHbarTransfer(operatorId, new Hbar(-fee))
+    //   .addHbarTransfer(AccountId.fromString(fee_two_Id), new Hbar(fee))
+    //   .freezeWith(client)
+    //   .sign(operatorKey);
+    // const transferSubmit1 = await transferTx1.execute(client);
+    // const transferRx1 = await transferSubmit1.getReceipt(client);
+
+    // if (transferRx1.status._code !== 22) return false;
 
     return true;
   } catch (error) {

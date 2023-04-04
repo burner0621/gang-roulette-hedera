@@ -44,9 +44,7 @@ export function resetRow (walletId) {
 	let sql =  `UPDATE
 					users
 				SET
-					balance = 0,
-					win = 0,
-					lost = 0
+					balance = 0
 				WHERE
 					walletId = ?`;
 	const stmt = db.prepare(sql);

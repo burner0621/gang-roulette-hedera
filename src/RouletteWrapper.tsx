@@ -102,38 +102,50 @@ class RouletteWrapper extends React.Component<any, any> {
     this.getBalance = this.getBalance.bind(this);
 
     // this.socketServer = io("http://94.131.105.114:8000");
-    this.socketServer = io("http://192.168.123.100:8000");
+    this.socketServer = io("http://65.108.142.188:8000");
   }
 
   componentDidMount() {
+
     this.register();
+
     this.socketServer.open();
+
     this.socketServer.on('stage-change', (data: string) => {
-      var gameData = JSON.parse(data) as GameData
+      console.log('State-Change Event: Occured');
+
+      var gameData = JSON.parse(data) as GameData;
       this.setGameData(gameData)
       if( this.state.stage == GameStages.WINNERS - 1)
         this.clearBet();
     });
+
     this.socketServer.on("connect", (socket: { on: (arg0: string, arg1: (data: string) => void) => void; }) => {
       this.setState({ username: this.props.username }, () => {
+        console.log('Enter Event: Occured');
         this.socketServer.emit("enter", this.state.username);
       });
     });
   }
+
   componentWillUnmount() {
     this.socketServer.close();
   }
-  async register(){
-    const data = { a: btoa(this.props.username) }
-    const _postResult = await postRequest("http://192.168.123.100:8000/register", data);
+
+  async register() {
+    const data = { a: btoa(this.props.username) };
+    // const _postResult = await postRequest("http://65.108.142.188:8000/register", data);
   }
+
   getBalance(gameData: GameData, name: string){
+    console.log('This Wallet\'s Name: ', name);
     var balances = gameData.balances;
     if(balances.length > 0){
       var i = 0;
       for( i = 0; i < balances.length; i++ )
       {
         if( balances[i].username == name ){
+          console.log('This Wallet\'s Balance: ', balances[i].value);
           return balances[i].value;
         }
       }
@@ -142,6 +154,9 @@ class RouletteWrapper extends React.Component<any, any> {
     }
   }
   setGameData(gameData: GameData) {
+    this.setState({ depositedAmount: this.getBalance(gameData, this.props.username) });
+    console.log('depositedAmount: ', this.getBalance(gameData, this.props.username));
+
     if (gameData.stage === GameStages.NO_MORE_BETS) { // PLACE BET from 25 to 35
       var endTime = 35;
       var nextNumber = gameData.value
@@ -149,15 +164,14 @@ class RouletteWrapper extends React.Component<any, any> {
     } else if (gameData.stage === GameStages.WINNERS) { // PLACE BET from 35 to 59
       var endTime = 59;
       if (gameData.wins.length > 0) {
-        this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, winners: gameData.wins, stage: gameData.stage, time_remaining: gameData.time_remaining, history: gameData.history, depositedAmount: this.getBalance(gameData, this.props.username) });
+        this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, winners: gameData.wins, stage: gameData.stage, time_remaining: gameData.time_remaining, history: gameData.history });
       } else {
-        this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, stage: gameData.stage, time_remaining: gameData.time_remaining, history: gameData.history, depositedAmount: this.getBalance(gameData, this.props.username) });
+        this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, stage: gameData.stage, time_remaining: gameData.time_remaining, history: gameData.history });
       }
     } else { // PLACE BET from 0 to 25
       var endTime = 25;
       
-      this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, stage: gameData.stage, time_remaining: gameData.time_remaining,
-        depositedAmount: this.getBalance(gameData, this.props.username) });
+      this.setState({ endTime: endTime, progressCountdown: endTime - gameData.time_remaining, stage: gameData.stage, time_remaining: gameData.time_remaining });
     }
   }
 
@@ -185,7 +199,7 @@ class RouletteWrapper extends React.Component<any, any> {
 
   amountChange = (event) => {
     // 👇 Get input value from "event"
-    this.setState({depositAmount: parseInt(event.target.value) })
+    this.setState({depositAmount: parseFloat(event.target.value) })
   };
 
   onDepositClick() {
@@ -198,8 +212,8 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      console.log('http://192.168.123.100:8000/refund');
-      const _postResult = await postRequest("http://192.168.123.100:8000/refund", data);
+      console.log('http://65.108.142.188:8000/refund');
+      const _postResult = await postRequest("http://65.108.142.188:8000/refund", data);
  
       console.log(_postResult);
 
@@ -304,7 +318,7 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'http://192.168.123.100:8000/placebet',
+          url: 'http://65.108.142.188:8000/placebet',
           responseType: 'json'
         })
         .then(function (response) {
