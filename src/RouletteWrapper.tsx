@@ -102,7 +102,7 @@ class RouletteWrapper extends React.Component<any, any> {
     this.getBalance = this.getBalance.bind(this);
 
     // this.socketServer = io("http://94.131.105.114:8000");
-    this.socketServer = io("http://65.108.142.188:8000");
+    this.socketServer = io("http://192.168.123.100:8000");
   }
 
   componentDidMount() {
@@ -125,7 +125,7 @@ class RouletteWrapper extends React.Component<any, any> {
   }
   async register(){
     const data = { a: btoa(this.props.username) }
-    const _postResult = await postRequest("http://65.108.142.188:8000/register", data);
+    const _postResult = await postRequest("http://192.168.123.100:8000/register", data);
   }
   getBalance(gameData: GameData, name: string){
     var balances = gameData.balances;
@@ -198,8 +198,8 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      console.log('http://65.108.142.188:8000/refund');
-      const _postResult = await postRequest("http://65.108.142.188:8000/refund", data);
+      console.log('http://192.168.123.100:8000/refund');
+      const _postResult = await postRequest("http://192.168.123.100:8000/refund", data);
  
       console.log(_postResult);
 
@@ -304,7 +304,7 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'http://65.108.142.188:8000/placebet',
+          url: 'http://192.168.123.100:8000/placebet',
           responseType: 'json'
         })
         .then(function (response) {

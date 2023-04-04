@@ -13,7 +13,7 @@ export const GET_ACCOUNT_PREFIX = "/api/v1/accounts/";
 export const IPFS_URL = "https://hashpack.b-cdn.net/ipfs/";
 
 export const COINGECKO_URL = "https://api.coingecko.com";
-export const SERVER_URL = "http://65.108.142.188:8000";
+export const SERVER_URL = "http://192.168.123.100:8000";
 export const IMG_URL = "https://degenland.tech:8000/images";
 
 export const DEGENLAND_NFT_ID = "0.0.1466939";

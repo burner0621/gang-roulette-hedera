@@ -29,10 +29,11 @@ export function insertRow(username, walletId, balance) {
 					walletId, 
 					balance, 
 					isWin, 
-					bet
+					bet,
+					timestamp
 				)
 			VALUES
-				(?, ?, ?, ?)`;
+				(?, ?, ?, ?, CURRENT_TIMESTAMP)`;
 
 	stmt = db.prepare(sql);
 	stmt.run(walletId, balance, 'deposit', 0);
@@ -85,10 +86,11 @@ export function updateRowWL (walletId, balance, bet, isWin) {
 					walletId, 
 					balance, 
 					isWin, 
-					bet
+					bet,
+					timestamp
 				)
 			VALUES
-				(?, ?, ?, ?)`;
+				(?, ?, ?, ?, CURRENT_TIMESTAMP)`;
 
 	stmt = db.prepare(sql);
 	stmt.run(walletId, balance, isWin, bet);
