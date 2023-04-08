@@ -20,7 +20,7 @@ export function createTable(db) {
 export function insertRow(username, walletId, balance) {
 	const db = new sqlite(filepath);
 	let sql = `INSERT INTO users (username, walletId, balance) VALUES (?, ?, ?)`;
-	const stmt = db.prepare(sql);
+	const stmt = db.prepare(sql); console.log (walletId, balance)
 	stmt.run(username, walletId, balance);
 
 	sql =  `INSERT INTO

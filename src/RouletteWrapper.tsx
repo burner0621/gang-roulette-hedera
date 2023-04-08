@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom';
 import Wheel from "./Wheel";
 import Board from "./Board";
 import { List, Progress } from '@mantine/core';
@@ -36,6 +35,7 @@ import HowTo from './HowTo';
 
 import './styles.css';
 
+import * as env from "./env";
 
 // var singleRotation = 0
 
@@ -94,15 +94,13 @@ class RouletteWrapper extends React.Component<any, any> {
     this.clearBet = this.clearBet.bind(this);
     this.onDepositClick = this.onDepositClick.bind(this);
     this.onRefundClick = this.onRefundClick.bind(this);
+    this.onPlaceBetClick = this.onPlaceBetClick.bind(this);
     this.onDepositeOkBtnClock = this.onDepositeOkBtnClock.bind(this);
     this.register = this.register.bind(this);
     this.getBalance = this.getBalance.bind(this);
 
-    // show logs
-    this.showLogs = this.showLogs.bind(this);
-
     // this.socketServer = io("http://94.131.105.114:8000");
-    this.socketServer = io("http://hbarroulette.io:3306");
+    this.socketServer = io(env.SERVER_URL);
   }
 
   componentDidMount() {
@@ -134,7 +132,7 @@ class RouletteWrapper extends React.Component<any, any> {
 
   async register() {
     const data = { a: btoa(this.props.username) };
-    // const _postResult = await postRequest("http://hbarroulette.io:3306/register", data);
+    // const _postResult = await postRequest("http://139.59.92.248:3333/register", data);
   }
 
   getBalance(gameData: GameData, name: string){
@@ -212,8 +210,7 @@ class RouletteWrapper extends React.Component<any, any> {
       const data = {
         a: btoa(this.props.username)
       }
-      console.log('http://hbarroulette.io:3306/refund');
-      const _postResult = await postRequest("http://hbarroulette.io:3306/refund", data);
+      const _postResult = await postRequest(env.SERVER_URL + "/refund", data);
  
       console.log(_postResult);
 
@@ -318,7 +315,47 @@ class RouletteWrapper extends React.Component<any, any> {
       } else {
         axios({
           method: 'get',
-          url: 'http://hbarroulette.io:3306/placebet',
+          url: env.SERVER_URL + '/placebet',
+          responseType: 'json'
+        })
+        .then(function (response) {
+          console.log("OOOOOOOOOOOOOOOOOOOO"+ response.data);
+        });
+
+        console.log('chips');
+        console.log(chips);
+        this.socketServer.emit("place-bet", JSON.stringify(chips));
+        toast.info("Betted successfully! Amount:" + sum.toString(),{position: toast.POSITION.BOTTOM_CENTER});
+      }
+      
+    }
+    else {
+      toast.error("You cannot place bet now. Please wait.",{position: toast.POSITION.BOTTOM_CENTER});
+    }
+  }
+  onPlaceBetClick() {
+    console.log('placeBet test function');
+
+    if( this.state.stage === GameStages.PLACE_BET){
+      var sum = 0;
+      var placedChipsMap = this.state.chipsData.placedChips
+      var chips: PlacedChip[] = new Array()
+      for (let key of Array.from(placedChipsMap.keys())) {
+        var chipsPlaced = placedChipsMap.get(key) as PlacedChip
+        chips.push(chipsPlaced);
+      }
+
+      var i = 0;
+      for( i = 0; i < chips.length; i++ ){
+        sum += chips[i].sum;
+      }
+
+      if( sum > this.state.depositedAmount ){
+        toast.error("Insufficient balance error. Please deposit more.",{position: toast.POSITION.BOTTOM_CENTER});
+      } else {
+        axios({
+          method: 'get',
+          url: env.SERVER_URL + '/placebet',
           responseType: 'json'
         })
         .then(function (response) {
@@ -343,11 +380,6 @@ class RouletteWrapper extends React.Component<any, any> {
         placedChips: new Map()
       }
     });
-  }
-
-  showLogs() {
-    const navigate = useNavigate();
-    navigate('/logs');
   }
 
   render() {
@@ -501,10 +533,6 @@ class RouletteWrapper extends React.Component<any, any> {
             </li>
             <li style={{ display: "flex", alignItems: "center"}}>
               <Button endIcon={<DeleteOutlineIcon/>} className="disconnect clearBet" style={{ marginRight: 20,marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.clearBet()} >Clear Bet</Button>
-            </li>
-            
-            <li style={{ display: "flex", alignItems: "center"}}>
-              <Button endIcon={<DeleteOutlineIcon/>} className="disconnect clearBet" style={{ marginRight: 20,marginTop: 20, minWidth: 150, minHeight:"50px" }} size="large" onClick={() => this.showLogs()} >Logs</Button>
             </li>
 
           </ul>

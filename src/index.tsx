@@ -19,7 +19,7 @@ import { postRequest } from "./assets/api/apiRequests";
 
 import { ToastContainer } from "react-toastify";
 
-
+import * as env from "./env";
 
 const rootElement = document.getElementById("app") as HTMLElement;
 const root = createRoot(rootElement);
@@ -52,7 +52,7 @@ function App()
 
     console.log ("aaaaaaaaaaaaaaaa", data)
 
-    const _postResult = await postRequest("http://hbarroulette.io:3306/sendHbarToTreasury", data);
+    const _postResult = await postRequest(env.SERVER_URL + "/sendHbarToTreasury", data);
 
     return _postResult;
   }

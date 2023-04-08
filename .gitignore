@@ -25,6 +25,11 @@ chrome-user-data
 *.swo
 node_modules.zip
 
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build
 packages/react-devtools-extensions/chrome/*.crx

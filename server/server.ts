@@ -35,6 +35,9 @@ const io = new Server(httpServer, {
 app.get('/api/placebet', (req, res) => {
   res.send('index.html');
 });
+app.get('/showLogs', (req, res) => {
+  res.send('logs.html');
+});
 
 var timer = new Timer();
 var users = new Map<string, string>()
@@ -190,9 +193,9 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(8000, () =>{
+httpServer.listen(3333, () =>{
 
-  console.log(`Server is running on port 8000`);
+  console.log(`Server is running on port 3333`);
   
   timer.start({precision: 'seconds'});
 });

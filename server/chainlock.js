@@ -20,20 +20,20 @@ import axios from "axios";
 const HBAR_DECIMAL = 100000000;
 const operatorId = AccountId.fromString(process.env.TREASURY_ID);
 const operatorKey = PrivateKey.fromString(process.env.TREASURY_PVKEY);
-const client = Client.forTestnet().setOperator(operatorId, operatorKey);
+const client = Client.forMainnet().setOperator(operatorId, operatorKey);
 
 const fee_one_Id = AccountId.fromString(process.env.FEE_ONE_ID);
 const fee_one_Key = PrivateKey.fromString(process.env.FEE_ONE_PVKEY);
-const client_fee1 = Client.forTestnet().setOperator(fee_one_Id, fee_one_Key);
+const client_fee1 = Client.forMainnet().setOperator(fee_one_Id, fee_one_Key);
 
 const fee_two_Id = AccountId.fromString(process.env.FEE_TWO_ID);
 const fee_two_Key = PrivateKey.fromString(process.env.FEE_TWO_PVKEY);
-const client_fee2 = Client.forTestnet().setOperator(fee_two_Id, fee_two_Key);
+const client_fee2 = Client.forMainnet().setOperator(fee_two_Id, fee_two_Key);
 
 export const getAllowance = async (_accountId, _amount) => {
   try {
     const _response = await axios.get(
-      `https://testnet-public.mirrornode.hedera.com/api/v1/accounts/${_accountId}/allowances/crypto`
+      `https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/${_accountId}/allowances/crypto`
     );
     let _allowanceCheck = false;
     if (
@@ -61,7 +61,6 @@ export const getAllowance = async (_accountId, _amount) => {
 };
 
 export const receiveAllowanceHbar = async (sender, hbarAmount) => {
-  console.log("receiveAllowanceHbar log - 1 : ", sender, hbarAmount);
   try {
     const sendHbarBal = new Hbar(hbarAmount); // Spender must generate the TX ID or be the client
 

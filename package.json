@@ -5,7 +5,7 @@
   "main": "src/index.tsx",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"npm run server\"",
+    "start": "concurrently \"npm run server\" \"PORT=3009 react-scripts start\"",
     "dev": "concurrently \"npm run server\" \"react-scripts start\"",
     "server": "node --experimental-specifier-resolution=node --loader ts-node/esm  server/server.ts",
     "build": "react-scripts build"
@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@hashgraph/sdk": "^2.24.0",
     "@iconscout/react-unicons": "^1.1.6",
     "@mantine/core": "^5.10.2",
     "@mantine/hooks": "^5.9.4",
@@ -25,7 +26,7 @@
     "axios": "^1.2.5",
     "better-sqlite3": "^8.0.1",
     "classnames": "2.3.2",
-    "concurrently": "7.6.0",
+    "concurrently": "^7.6.0",
     "cors": "^2.8.5",
     "deploy": "^1.0.3",
     "easytimer.js": "^4.5.4",
@@ -36,7 +37,9 @@
     "https": "^1.0.0",
     "jquery": "^3.6.3",
     "material-ui-popup-state": "^5.0.4",
-    "node-sass": "^7.0.3",
+    "nmap": "^1.1.0",
+    "node-sass": "^8.0.0",
+    "pm2": "^5.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native-media-console": "^2.0.6",
@@ -51,7 +54,8 @@
     "socket.io-client": "4.5.4",
     "sqlite3": "^5.1.4",
     "ts-node": "10.9.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/animejs": "^3.1.6",

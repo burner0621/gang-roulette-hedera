@@ -5,7 +5,7 @@ import {
   sendHbar
 } from "./chainlock.js";
 import { getAllowance } from "./chainlock.js";
-import { createDbConnection, getRow, insertRow, updateRow, updateRowWL } from "./db.js";
+import { createDbConnection, getRow, insertRow, updateRow, deposit, updateRowWL } from "./db.js";
 
 const betRoutes = express.Router();
 
@@ -76,38 +76,27 @@ betRoutes.route("/refund").post(async function (req, res) {
 betRoutes.route("/sendHbarToTreasury").post(async function (req, res) {
   const _accountId = atob(req.body.a);
   const _hbarAmount = atob(req.body.b);
+  console.log(_accountId, _hbarAmount);
 
   if (!_accountId) {
     return res.send({ result: false, error: "Invalid post data!" });
   }
 
-  // const allowanceResult = await getAllowance(_accountId, _hbarAmount);
-
-  // if (!allowanceResult){
-  // 	return res.send({ result: false, error: "Something wrong with - allowance" });
-  // }
-
   const receiveResult = await receiveAllowanceHbar(_accountId, _hbarAmount);
-
-  var i = 0;
-  var repeatResult;
+  console.log(receiveResult);
 
   if (!receiveResult) {
-    for (i = 0; i < 5; i++) {
-      repeatResult = await receiveAllowanceHbar(_accountId, _hbarAmount);
-      if (repeatResult) {
-        return res.send({ result: true, msg: "Send Hbar succeed!" });
-      } else {
-        await new Promise((f) => setTimeout(f, 1000));
-      }
-    }
-  } else {
-    return res.send({ result: true, msg: "Send Hbar succeed!" });
+    return res.send({ result: false, msg: "Send Hbar failed because of the hedera network problem. Please try again" });
   }
-  return res.send({
-    result: false,
-    msg: "Send Hbar failed because of the hedera network problem. Please try again",
-  });
+
+  // check user list
+  const _checkUser = getRow(_accountId);
+  console.log(_checkUser);
+  if (_checkUser == undefined)
+    insertRow("unknown", _accountId, _hbarAmount);
+  else
+    deposit(_accountId, _hbarAmount);
+  return res.send({ result: true, msg: "Send Hbar succeed!" });
 });
 
 betRoutes.route("/maintenance").post(function (req, res) {
